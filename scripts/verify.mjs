@@ -3,7 +3,8 @@ import {resolve,join} from 'node:path';
 import assert from 'node:assert/strict';
 const root=resolve('dist'), prefix='/zhishijie/';
 async function walk(dir){const files=await readdir(dir,{withFileTypes:true});return (await Promise.all(files.map(f=>f.isDirectory()?walk(join(dir,f.name)):[join(dir,f.name)]))).flat();}
-const files=(await walk(root)).filter(f=>f.endsWith('.html'));
+const verificationFile=join(root,'google7a885785c8783837.html');
+const files=(await walk(root)).filter(f=>f.endsWith('.html')&&f!==verificationFile);
 assert.equal(files.length,31,'Expected exactly 31 pages');
 const titles=new Set(),descriptions=new Set();let links=0;
 for(const file of files){
