@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+import AppCarousel from '../components/AppCarousel.astro';
+import Download from '../components/Download.astro';
+import Icon from '../components/Icon.astro';
+import { terms, seasons, calendars, calendarYears, calendarYearLabel, url, storeURL, seasonalMoment } from '../data/site';
+const { current, next } = seasonalMoment();
+const currentContent = terms.find(entry => entry.frontmatter.slug === current?.slug)?.frontmatter;
+const dayIndex = (value: number) => Math.floor((value + 8 * 60 * 60 * 1000) / 86400000);
+const daysUntilNext = next ? dayIndex(Date.parse(next.datetime)) - dayIndex(Date.now()) : null;
+const today = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date()).replaceAll('/', '-');
+const featuredDate = next ?? current;
+const featuredCalendar = (featuredDate && calendars.find(calendar => calendar.terms.includes(featuredDate))) ?? calendars.at(-1)!;
+const homeDescription = `知时节是一款二十四节气日历 App，支持 iPhone、iPad 和 Apple Watch。查看${calendarYearLabel}年节气时间表、七十二候与应时诗词，在 App Store 免费下载。`;
+const appSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'MobileApplication',
+  '@id': new URL(url('#app'), Astro.site).href,
+  name: '知时节',
+  description: homeDescription,
+  applicationCategory: 'LifestyleApplication',
+  operatingSystem: 'iOS, iPadOS, watchOS',
+  url: new URL(url(), Astro.site).href,
+  image: new URL(url('images/app/app-icon.jpg'), Astro.site).href,
+  downloadUrl: storeURL,
+  offers: { '@type': 'Offer', price: 0, priceCurrency: 'CNY', url: storeURL },
+};
+const seasonNotes = ['万物生发', '繁茂葱郁', '层林尽染', '静藏待春'];
+---
+<Base title="知时节 App｜二十四节气日历与七十二候" description={homeDescription} socialImage="images/app/app-icon.jpg" socialImageAlt="知时节 App 图标" mainEntity={appSchema} pageClass="home-page">
+  <section class="home-hero wrap" aria-labelledby="home-title">
+    <div class="hero-copy">
+      <h1 id="home-title">知时节</h1>
+      <p class="hero-tagline">感受二十四节气之美</p>
+      <p class="hero-description">探知二十四节气、七十二候与中国传统节日，<br />从草木物候到应时诗词，在日常中感受四季之美。</p>
+      <div class="hero-download"><Download placement="home_hero" campaign="website_home" label="在 App Store 免费下载" /><span>iPhone · iPad · Apple Watch</span></div>
+    </div>
+    <AppCarousel />
+  </section>
+  <section class="home-season-overview wrap" aria-label="当前节气与年度日历">
+    <div class="season-status">
+      <a class="current-season" href={current ? url(`solar-terms/${current.slug}/`) : url('seasonal-calendar/')} id="current-season">
+        <span class="current-caption">当前节气</span>
+        <strong id="current-name">{current?.name ?? '四时有序'}</strong>
+        <span class="season-note" id="current-note">{currentContent?.summary ?? '循节气，感受四季流转。'}</span>
+        <span class="current-date" id="current-date">北京时间 {today}</span>
+        <Icon name="arrow-up-right" size={18} />
+      </a>
+      <a class="next-season" id="next-season" href={next ? url(`solar-terms/${next.slug}/`) : url('seasonal-calendar/')}>
+        <span class="current-caption">下一节气 · <span id="next-name">{next?.name ?? '待更新'}</span></span>
+        <span class="next-countdown" id="next-countdown">{daysUntilNext === null ? '待更新' : daysUntilNext === 0 ? '今日将至' : <><strong>{daysUntilNext}</strong><span>天后</span></>}</span>
+        <span class="next-date" id="next-date">{next ? `${next.displayTime.slice(5).replace('-', '月').replace(' ', '日 ')} · 北京时间` : '查看岁时日历'}</span>
+        <span class="next-link">迎接下一个时节 <Icon name="arrow-right" size={16} /></span>
+      </a>
+    </div>
+    <a class="calendar-feature" href={url(`seasonal-calendar/${featuredCalendar.year}/`)}><Icon name="calendar-month" size={29} /><h2>{featuredCalendar.year} 年度日历</h2><p>按节气标注的整年日历，<br />把握规划你的四季生活。</p><span class="round-link"><Icon name="arrow-right" size={18} /></span></a>
+  </section>
+  <section class="season-doorways wrap" aria-label="从四季认识二十四节气">
+    {seasons.map((season, i) => <a class="season-doorway" href={url(`solar-terms/#${season.id}`)}><img src={url(`images/seasons/${season.id}.webp`)} width="1200" height="480" alt="" loading="lazy" /><span><strong>{season.name}</strong><small>{seasonNotes[i]}</small></span><Icon name="arrow-right" size={18} /></a>)}
+  </section>
+  <section class="home-reading wrap" aria-labelledby="home-reading-title"><div><span class="section-label">四时一览</span><h2 id="home-reading-title">每个节气，都有值得细读的风景。</h2></div><div class="reading-links"><a href={url('solar-terms/')}>二十四节气的含义、三候与诗词<Icon name="arrow-up-right" size={19} /></a>{calendarYears.map(year => <a href={url(`seasonal-calendar/${year}/`)}>{year} 年节气时间表<Icon name="arrow-up-right" size={19} /></a>)}</div></section>
+
+  <script define:vars={{events: calendars.flatMap(c => c.terms), termData: terms.map(entry => ({slug:entry.frontmatter.slug,summary:entry.frontmatter.summary})), root: url()}}>
+    function updateSeason() {
+      const sorted = events.slice().sort((a, b) => Date.parse(a.datetime) - Date.parse(b.datetime));
+      const now = Date.now();
+      const current = sorted.filter(term => Date.parse(term.datetime) <= now).at(-1);
+      const next = sorted.find(term => Date.parse(term.datetime) > now);
+      if (current) {
+        document.getElementById('current-name').textContent = current.name;
+        document.getElementById('current-season').href = root + 'solar-terms/' + current.slug + '/';
+        document.getElementById('current-note').textContent = termData.find(term => term.slug === current.slug)?.summary ?? '循节气，感受四季流转。';
+      }
+      if (next) {
+        const dayIndex = value => Math.floor((value + 8 * 60 * 60 * 1000) / 86400000);
+        const days = dayIndex(Date.parse(next.datetime)) - dayIndex(now);
+        document.getElementById('next-name').textContent = next.name;
+        document.getElementById('next-season').href = root + 'solar-terms/' + next.slug + '/';
+        const countdown = document.getElementById('next-countdown');
+        countdown.replaceChildren();
+        if (days === 0) countdown.textContent = '今日将至';
+        else {
+          const number = document.createElement('strong');
+          number.textContent = String(days);
+          const unit = document.createElement('span');
+          unit.textContent = '天后';
+          countdown.append(number, unit);
+        }
+        document.getElementById('next-date').textContent = next.displayTime.slice(5).replace('-', '月').replace(' ', '日 ') + ' · 北京时间';
+      } else {
+        document.getElementById('next-name').textContent = '待更新';
+        document.getElementById('next-countdown').textContent = '待更新';
+        document.getElementById('next-date').textContent = '查看岁时日历';
+        document.getElementById('next-season').href = root + 'seasonal-calendar/';
+      }
+      document.getElementById('current-date').textContent = '北京时间 ' + new Intl.DateTimeFormat('zh-CN', {timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(now)).replaceAll('/','-');
+    }
+    updateSeason();
+    setInterval(updateSeason, 60000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) updateSeason(); });
+  </script>
+</Base>

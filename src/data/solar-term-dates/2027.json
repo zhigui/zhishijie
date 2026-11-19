@@ -1,0 +1,155 @@
+{
+  "year": 2027,
+  "timezone": "Asia/Shanghai",
+  "source": "SolarTerms/SwiftLunar (original Swift calculation)",
+  "generatedAt": "2026-11-19",
+  "precision": "Displayed to nearest minute; seconds are calculation output, not a claim of second-level accuracy.",
+  "verification": "Calculated with same Swift implementation; not independently compared to a published 2027 almanac.",
+  "sourceHash": "5d3b2bc76564fb0ce028f32c5649cb86ced4376c434756580fbe4e303945fcb9",
+  "terms": [
+    {
+      "name": "小寒",
+      "slug": "xiaohan",
+      "datetime": "2027-01-05T22:09:57+08:00",
+      "displayTime": "2027-01-05 22:10"
+    },
+    {
+      "name": "大寒",
+      "slug": "dahan",
+      "datetime": "2027-01-20T15:29:49+08:00",
+      "displayTime": "2027-01-20 15:30"
+    },
+    {
+      "name": "立春",
+      "slug": "lichun",
+      "datetime": "2027-02-04T09:46:18+08:00",
+      "displayTime": "2027-02-04 09:46"
+    },
+    {
+      "name": "雨水",
+      "slug": "yushui",
+      "datetime": "2027-02-19T05:33:28+08:00",
+      "displayTime": "2027-02-19 05:33"
+    },
+    {
+      "name": "惊蛰",
+      "slug": "jingzhe",
+      "datetime": "2027-03-06T03:39:32+08:00",
+      "displayTime": "2027-03-06 03:40"
+    },
+    {
+      "name": "春分",
+      "slug": "chunfen",
+      "datetime": "2027-03-21T04:24:42+08:00",
+      "displayTime": "2027-03-21 04:25"
+    },
+    {
+      "name": "清明",
+      "slug": "qingming",
+      "datetime": "2027-04-05T08:17:30+08:00",
+      "displayTime": "2027-04-05 08:18"
+    },
+    {
+      "name": "谷雨",
+      "slug": "guyu",
+      "datetime": "2027-04-20T15:17:38+08:00",
+      "displayTime": "2027-04-20 15:18"
+    },
+    {
+      "name": "立夏",
+      "slug": "lixia",
+      "datetime": "2027-05-06T01:25:11+08:00",
+      "displayTime": "2027-05-06 01:25"
+    },
+    {
+      "name": "小满",
+      "slug": "xiaoman",
+      "datetime": "2027-05-21T14:18:14+08:00",
+      "displayTime": "2027-05-21 14:18"
+    },
+    {
+      "name": "芒种",
+      "slug": "mangzhong",
+      "datetime": "2027-06-06T05:25:47+08:00",
+      "displayTime": "2027-06-06 05:26"
+    },
+    {
+      "name": "夏至",
+      "slug": "xiazhi",
+      "datetime": "2027-06-21T22:10:49+08:00",
+      "displayTime": "2027-06-21 22:11"
+    },
+    {
+      "name": "小暑",
+      "slug": "xiaoshu",
+      "datetime": "2027-07-07T15:37:02+08:00",
+      "displayTime": "2027-07-07 15:37"
+    },
+    {
+      "name": "大暑",
+      "slug": "dashu",
+      "datetime": "2027-07-23T09:04:39+08:00",
+      "displayTime": "2027-07-23 09:05"
+    },
+    {
+      "name": "立秋",
+      "slug": "liqiu",
+      "datetime": "2027-08-08T01:26:46+08:00",
+      "displayTime": "2027-08-08 01:27"
+    },
+    {
+      "name": "处暑",
+      "slug": "chushu",
+      "datetime": "2027-08-23T16:14:18+08:00",
+      "displayTime": "2027-08-23 16:14"
+    },
+    {
+      "name": "白露",
+      "slug": "bailu",
+      "datetime": "2027-09-08T04:28:27+08:00",
+      "displayTime": "2027-09-08 04:28"
+    },
+    {
+      "name": "秋分",
+      "slug": "qiufen",
+      "datetime": "2027-09-23T14:01:42+08:00",
+      "displayTime": "2027-09-23 14:02"
+    },
+    {
+      "name": "寒露",
+      "slug": "hanlu",
+      "datetime": "2027-10-08T20:17:05+08:00",
+      "displayTime": "2027-10-08 20:17"
+    },
+    {
+      "name": "霜降",
+      "slug": "shuangjiang",
+      "datetime": "2027-10-23T23:32:52+08:00",
+      "displayTime": "2027-10-23 23:33"
+    },
+    {
+      "name": "立冬",
+      "slug": "lidong",
+      "datetime": "2027-11-07T23:38:34+08:00",
+      "displayTime": "2027-11-07 23:39"
+    },
+    {
+      "name": "小雪",
+      "slug": "xiaoxue",
+      "datetime": "2027-11-22T21:16:13+08:00",
+      "displayTime": "2027-11-22 21:16"
+    },
+    {
+      "name": "大雪",
+      "slug": "daxue",
+      "datetime": "2027-12-07T16:37:41+08:00",
+      "displayTime": "2027-12-07 16:38"
+    },
+    {
+      "name": "冬至",
+      "slug": "dongzhi",
+      "datetime": "2027-12-22T10:42:10+08:00",
+      "displayTime": "2027-12-22 10:42"
+    }
+  ]
+}

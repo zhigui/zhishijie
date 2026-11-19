@@ -1,0 +1,42 @@
+---
+import { url } from '../data/site';
+const screens = [1, 2, 3, 4, 5, 6];
+---
+<div class="hero-carousel" role="region" aria-label="知时节 App 界面轮播">
+  <div class="hero-carousel-viewport" id="app-carousel-slides" tabindex="0" role="group" aria-label="滑动浏览 App 截图">
+    {screens.map(screen => <figure class="hero-carousel-slide"><img src={url(`images/app/screen-${screen}.png`)} width="935" height="1963" alt={`知时节 App 界面 ${screen}`} fetchpriority={screen === 1 ? 'high' : 'auto'} draggable="false" /></figure>)}
+  </div>
+  <div class="hero-carousel-controls" hidden>
+    {screens.map(screen => <button type="button" class="hero-carousel-dot" aria-controls="app-carousel-slides" aria-label={`查看第 ${screen} 张截图`} aria-current={screen === 1 ? 'true' : undefined} />)}
+  </div>
+</div>
+<script>
+  const viewport = document.querySelector<HTMLElement>('#app-carousel-slides');
+  const controls = document.querySelector<HTMLElement>('.hero-carousel-controls');
+  const carousel = viewport?.closest('.hero-carousel');
+  if (viewport && controls && carousel) {
+    controls.hidden = false;
+    const dots = [...controls.querySelectorAll('.hero-carousel-dot')];
+    const current = () => Math.round(viewport.scrollLeft / viewport.clientWidth);
+    const show = (index: number) => viewport.scrollTo({ left: index * viewport.clientWidth });
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let timer: number;
+    const schedule = () => {
+      window.clearTimeout(timer);
+      if (reducedMotion.matches || document.hidden || carousel.matches(':hover, :focus-within') || viewport.clientWidth === 0) return;
+      timer = window.setTimeout(() => show((current() + 1) % dots.length), 5000);
+    };
+    dots.forEach((dot, index) => dot.addEventListener('click', () => show(index)));
+    viewport.addEventListener('scroll', () => {
+      dots.forEach((dot, index) => {
+        if (index === current()) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+      schedule();
+    });
+    ['mouseenter', 'mouseleave', 'focusin', 'focusout'].forEach(event => carousel.addEventListener(event, () => window.setTimeout(schedule, 0)));
+    document.addEventListener('visibilitychange', schedule);
+    reducedMotion.addEventListener('change', schedule);
+    schedule();
+  }
+</script>

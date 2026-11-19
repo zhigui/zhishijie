@@ -1,0 +1,5 @@
+---
+import { calendarYearLabel } from '../../data/site';
+import Base from '../../layouts/Base.astro';import TermGrid from '../../components/TermGrid.astro';
+---
+<Base title="二十四节气顺序、含义与时间表 · 知时节" description={`按春夏秋冬认识二十四节气的顺序、含义与三候，查看${calendarYearLabel}年交节日期和时间。`} breadcrumbs={[{name:'二十四节气',path:'solar-terms/'}]}><section class="page-hero wrap"><div class="kicker">THE RHYTHM OF A YEAR</div><h1>二十四节气，<span>四时的来信。</span></h1><p>太阳每运行黄经十五度，便是一封来自季节的信。<br/>从立春到大寒，在二十四次相逢中，读懂一年。</p></section><section class="wrap section"><div class="explain"><h2>二十四节气是什么？</h2><p>二十四节气以太阳在黄道上的周年视运动为依据，将一年划分为二十四个节点。它既是一套时间知识，也承载着农事、物候和日常生活的文化记忆。节气以天文时刻划定，不能直接当作各地的天气预报。</p><p>传统四季以立春、立夏、立秋、立冬为起点，每季六个节气。下方依次排列，点击可查节气时间、三候与古典诗句。</p></div><TermGrid filter/></section></Base>

@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import { downloadURL } from '../data/site';
+---
+<Base title="关于知时节 · 让时间有自然的模样" description="知时节从二十四节气出发，记录随季节变化的日常。" breadcrumbs={[{ name: '关于', path: 'about/' }]}>
+  <article class="prose">
+    <div class="kicker">A NOTE FROM ZHISHIJIE</div>
+    <h1>与自然相知，<br />与时节相逢。</h1>
+    <p>同一个节气，在不同地方有不同的风景。立冬到了，有的地方已经结霜，有的地方还很暖和。知时节从二十四节气出发，记录这些随季节变化的日常。</p>
+    <h2>知时节 App</h2>
+    <p>想在手机上查看节气日历、物候和应时诗词，可以<a href={downloadURL('about')}>在 App Store 下载知时节</a>。</p>
+  </article>
+</Base>

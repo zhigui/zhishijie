@@ -1,0 +1,7 @@
+---
+import { downloadURL, url } from '../data/site';
+const { placement, campaign = 'website_home', label = '下载知时节 App', compact = false, text = false } = Astro.props;
+---
+<a class:list={[compact || text ? 'download-text' : 'app-store-download']} href={downloadURL(campaign)} data-download={campaign} data-download-placement={placement} target="_blank" rel="noopener noreferrer" aria-label="在 App Store 下载知时节">
+  {compact || text ? <span>{label}</span> : <img src={url('images/app/app-store-badge.svg')} width="108.85157" height="40" alt="在 App Store 下载" />}
+</a>

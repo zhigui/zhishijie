@@ -1,0 +1,5 @@
+---
+import Base from '../../layouts/Base.astro';import {calendarYears, calendarYearLabel, url} from '../../data/site';
+import Icon from '../../components/Icon.astro';
+---
+<Base title={`岁时日历 · ${calendarYearLabel}年二十四节气时间表 · 知时节`} description={`查看${calendarYearLabel}年二十四节气日期和开始时间，以中国标准时间显示，了解历法计算与分钟精度说明。`} breadcrumbs={[{name:'岁时日历',path:'seasonal-calendar/'}]}><section class="page-hero wrap"><div class="kicker">YOUR SEASONAL ALMANAC</div><h1>日子有刻度，<span>四季有回声。</span></h1><p>把一年里的二十四次更迭，轻轻记在日历上。</p></section><section class="wrap section"><div class="year-grid">{calendarYears.map(year=><a class="year-card" href={url(`seasonal-calendar/${year}/`)}><span>二十四节气年度日历</span><strong>{year}<Icon name="arrow-up-right" size={24} /></strong><p>24 个节气的日期和开始时间 · 中国标准时间</p></a>)}</div><div class="explain"><h2>节气日期为什么每年不同？</h2><p>节气由太阳到达特定黄经的天文时刻确定。公历的整日编排、闰年与太阳运行周期的关系，使交节日期与时间每年有所变化。因此，查阅当年的计算结果比记住一个固定日期更合适。</p><p>全站统一使用中国标准时间（UTC+8），不随访问者的设备时区改变。节气属于同一个全球天文瞬间，在其他时区可能对应不同的当地日期。</p></div></section></Base>

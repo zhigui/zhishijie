@@ -1,0 +1,88 @@
+---
+import '../styles/global.css';
+import { calendarYearLabel, url } from '../data/site';
+import Download from '../components/Download.astro';
+const {
+  title = '知时节 · 感受二十四节气之美',
+  description = `探索二十四节气、七十二候与传统节气文化，查询${calendarYearLabel}年节气时间表，在知时节里感受四季。`,
+  socialImage = '',
+  socialImageAlt = '',
+  mainEntity = null,
+  noindex = false,
+  breadcrumbs = [],
+  pageClass = '',
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const imageURL = socialImage ? new URL(url(socialImage), Astro.site).href : undefined;
+const schema = { '@context': 'https://schema.org', '@type': 'WebSite', name: '知时节', url: new URL(url(), Astro.site).href, inLanguage: 'zh-CN' };
+const bread = breadcrumbs.length ? {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [{ name: '首页', path: '' }, ...breadcrumbs].map((b: any, i: number) => ({ '@type': 'ListItem', position: i + 1, name: b.name, item: new URL(url(b.path), Astro.site).href })),
+} : null;
+const navigation = [
+  { name: '二十四节气', path: 'solar-terms/' },
+  { name: '岁时日历', path: 'seasonal-calendar/' },
+  { name: '关于', path: 'about/' },
+];
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#faf8f3" />
+    <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="bc4ae2ef-49d9-4237-908a-a096dc19bbf7"></script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={url('images/app/app-icon.jpg')} type="image/jpeg" />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_CN" />
+    {imageURL && <>
+      <meta property="og:image" content={imageURL} />
+      <meta property="og:image:alt" content={socialImageAlt} />
+      <meta name="twitter:card" content="summary" />
+    </>}
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    {mainEntity && <script type="application/ld+json" set:html={JSON.stringify(mainEntity)} />}
+    {bread && <script type="application/ld+json" set:html={JSON.stringify(bread)} />}
+  </head>
+  <body class={pageClass}>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="wordmark" href={url()} aria-label="知时节首页"><img src={url('images/app/app-icon.jpg')} width="28" height="28" alt="" />知时节</a>
+      <nav class="main-nav" aria-label="主导航">
+        {navigation.map(item => <a href={url(item.path)} aria-current={Astro.url.pathname.includes(item.path) ? 'page' : undefined}>{item.name}</a>)}
+      </nav>
+      <Download placement="header" label="下载 App" campaign="header" compact />
+    </header>
+    <main id="main">
+      {breadcrumbs.length > 0 && <nav class="breadcrumbs wrap" aria-label="面包屑导航"><a href={url()}>首页</a>{breadcrumbs.map((b: any, i: number) => <><span aria-hidden="true">/</span><a href={url(b.path)} aria-current={i === breadcrumbs.length - 1 ? 'page' : undefined}>{b.name}</a></>)}</nav>}
+      <slot />
+    </main>
+    <footer class="site-footer wrap">
+      <div class="footer-top">
+        <a class="wordmark" href={url()}>知时节</a>
+        <p>感受二十四节气之美</p>
+        <nav aria-label="页脚导航"><a href={url('solar-terms/')}>二十四节气</a><a href={url('seasonal-calendar/')}>岁时日历</a><a href="https://zhigui.github.io/app-docs/solar-terms/privacy_policy.html">隐私政策</a></nav>
+      </div>
+      <div class="footer-bottom"><span>© {new Date().getUTCFullYear()} 知时节</span><span>二十四节气 · 七十二候 · 四时有序</span></div>
+    </footer>
+    <script>
+      const analyticsWindow = window as Window & {
+        umami?: { track: (event: string, data: { campaign: string; placement: string }) => void };
+      };
+      document.querySelectorAll<HTMLAnchorElement>('[data-download]').forEach(link => link.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('zhishijie:download', { detail: { campaign: link.dataset.download, path: location.pathname } }));
+        analyticsWindow.umami?.track('app_download_click', {
+          campaign: link.dataset.download ?? '',
+          placement: link.dataset.downloadPlacement ?? '',
+        });
+      }));
+    </script>
+  </body>
+</html>

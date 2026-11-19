@@ -1,0 +1,6 @@
+---
+import { url } from '../data/site';
+interface Props { name: string; size?: number; class?: string }
+const { name, size = 20, class: className = '' } = Astro.props;
+---
+<img class:list={['icon', className]} src={url(`icons/${name}.svg`)} width={size} height={size} alt="" aria-hidden="true" />

@@ -1,0 +1,20 @@
+---
+import { terms, seasons, url, dateFor } from '../data/site';
+import Icon from './Icon.astro';
+const { filter = false } = Astro.props;
+---
+{filter && <div class="season-filters" role="group" aria-label="按季节筛选"><button type="button" class="selected" data-season="all" aria-pressed="true">全部</button>{seasons.map(season => <button type="button" data-season={season.id} aria-pressed="false">{season.name}季</button>)}</div>}
+<div class="season-index">
+  {seasons.map(season => <section class="season-chapter" id={season.id} data-term-season={season.id}><header class="season-chapter-heading"><img src={url(`images/seasons/${season.id}.webp`)} width="1200" height="480" alt="" loading="lazy" /><h2>{season.name}</h2><p>{season.note}</p></header><div class="term-rows">{terms.filter(entry => entry.frontmatter.season === season.id).map(({ frontmatter: term }) => <a class="term-row" href={url(`solar-terms/${term.slug}/`)}><span class="term-order">{String(term.order).padStart(2, '0')}</span><h3>{term.name}</h3><p>{term.summary}</p><time datetime={dateFor(term.slug).datetime}>{dateFor(term.slug).displayTime.slice(5, 10).replace('-', '月')}日</time><Icon name="arrow-up-right" size={17} /></a>)}</div></section>)}
+</div>
+{filter && <script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-season]');
+  function selectSeason(season: string) {
+    buttons.forEach(button => { const selected = button.dataset.season === season; button.classList.toggle('selected', selected); button.setAttribute('aria-pressed', String(selected)); });
+    document.querySelectorAll<HTMLElement>('[data-term-season]').forEach(chapter => chapter.hidden = season !== 'all' && chapter.dataset.termSeason !== season);
+  }
+  buttons.forEach(button => button.addEventListener('click', () => selectSeason(button.dataset.season!)));
+  // Deep links from the homepage must always reveal the requested season.
+  function revealHash() { const season = location.hash.slice(1); if (['spring', 'summer', 'autumn', 'winter'].includes(season)) selectSeason('all'); }
+  window.addEventListener('hashchange', revealHash); revealHash();
+</script>}

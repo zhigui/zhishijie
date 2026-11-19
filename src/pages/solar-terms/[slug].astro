@@ -1,0 +1,78 @@
+---
+import Base from '../../layouts/Base.astro';
+import houExplanations from '../../data/hou-explanations.json';
+import CTA from '../../components/CTA.astro';
+import Icon from '../../components/Icon.astro';
+import { terms, url, dateFor, formatDate, calendarYears } from '../../data/site';
+export function getStaticPaths() {
+  return terms.map(entry => ({ params: { slug: entry.frontmatter.slug }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const t = entry.frontmatter;
+const Content = entry.Content;
+const previous = terms[(t.order + 22) % 24].frontmatter;
+const next = terms[t.order % 24].frontmatter;
+const dates = calendarYears.map(year => dateFor(t.slug, year));
+const now = Date.now();
+const featured = dates.find(date => Date.parse(date.datetime) >= now) ?? dates.at(-1)!;
+const featuredYear = Number(featured.displayTime.slice(0, 4));
+const mainDate = featured.displayTime.slice(0, 10).split('-').map(Number);
+const [, month, day] = mainDate;
+const dateAnswer = `${featuredYear}年${t.name}是${month}月${day}日，北京时间${featured.displayTime.slice(11)}开始。`;
+const houAnswer = `${t.name}三候是${t.hou.join('、')}。`;
+const verse = t.poem.sentence.replaceAll('。', '。\n').trim();
+---
+<Base title={`${featuredYear}年${t.name}是哪一天？${t.name}时间、三候与诗词｜知时节`} description={dateAnswer + houAnswer} socialImage={`images/seasons/${t.season}.webp`} socialImageAlt={`${t.name}的时令插画`} pageClass="term-page" breadcrumbs={[{ name: '二十四节气', path: 'solar-terms/' }, { name: t.name, path: `solar-terms/${t.slug}/` }]}>
+  <div class="term-shell wrap">
+    <header class="term-heading">
+      <img class="term-heading-art" src={url(`images/seasons/${t.season}.webp`)} width="1200" height="480" alt="" aria-hidden="true" fetchpriority="high" />
+      <h1>{t.name}</h1>
+      <div class="term-date" id="date"><time id="hero-term-date" datetime={featured.datetime}>{mainDate[0]}年{mainDate[1]}月{mainDate[2]}日 <span>{featured.displayTime.slice(11)} 开始 · 北京时间</span></time><div class="year-switch" aria-label="选择年份">{calendarYears.map(year => <button type="button" data-year={year} aria-pressed={year === featuredYear}>{year}</button>)}</div></div>
+      <p>{t.summary}</p>
+    </header>
+    <nav class="article-tabs" aria-label="节气内容导航"><a href="#meaning" aria-current="location">节气</a><a href="#times">日期和时间</a><a href="#phenology">三候</a><a href="#poetry">诗词</a></nav>
+    <article class="term-prose">
+      <div id="meaning" class="markdown-content"><Content /></div>
+      <section class="term-date-details" id="times"><h2>{t.name}是几月几日？</h2><p>{dateAnswer}</p><div class="term-times">{calendarYears.map(year => <a href={url(`seasonal-calendar/${year}/`)}><span>{year} 年{t.name}</span><time datetime={dateFor(t.slug, year).datetime}>{formatDate(dateFor(t.slug, year).displayTime)}</time><Icon name="arrow-up-right" size={17} /></a>)}</div></section>
+      <section id="phenology" class="phenology-section">
+        <h2>{t.name}三候</h2>
+        <p>{houAnswer}</p>
+        <ol class="phenology-names">
+          {t.hou.map((name: keyof typeof houExplanations, i: number) => (
+            <li>
+              <span>{['初候', '二候', '三候'][i]}·{name}</span>
+              <p class="phenology-explanation">{houExplanations[name]}</p>
+            </li>
+          ))}
+        </ol>
+        <p class="small-note">实际物候随地域与天气而异。</p>
+      </section>
+      <section id="poetry" class="poetry-section"><h2>{t.name}古诗选句</h2><figure class="poem"><figcaption><h3>{t.poem.title}</h3><span>〔{t.poem.dynasty}〕{t.poem.author}</span></figcaption><blockquote>{verse}</blockquote></figure></section>
+      <nav class="related-terms" aria-label="相邻节气"><a href={url(`solar-terms/${previous.slug}/`)}><span>上一节气</span><strong>{previous.name}</strong></a><a href={url(`solar-terms/${next.slug}/`)}><span>下一节气</span><strong>{next.name}</strong><Icon name="arrow-right" size={20} /></a></nav>
+    </article>
+    <CTA campaign={`solar_terms_${t.slug}`} />
+  </div>
+  <script define:vars={{dates}}>
+    document.querySelectorAll('[data-year]').forEach(button => button.addEventListener('click', () => {
+      const term = dates.find(date => date.displayTime.startsWith(button.dataset.year));
+      if (!term) return;
+      const [year, month, day] = term.displayTime.slice(0, 10).split('-').map(Number);
+      const time = document.getElementById('hero-term-date');
+      time.dateTime = term.datetime;
+      time.replaceChildren(document.createTextNode(`${year}年${month}月${day}日 `));
+      const caption = document.createElement('span'); caption.textContent = term.displayTime.slice(11) + ' 开始 · 北京时间'; time.append(caption);
+      document.querySelectorAll('[data-year]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    }));
+  </script>
+  <script>
+    const anchors = Array.from(document.querySelectorAll<HTMLAnchorElement>('.article-tabs a'));
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (visible) anchors.forEach(anchor => {
+        if (anchor.hash === '#' + visible.target.id) anchor.setAttribute('aria-current', 'location');
+        else anchor.removeAttribute('aria-current');
+      });
+    }, { rootMargin: '-12% 0px -65% 0px', threshold: 0 });
+    anchors.forEach(anchor => { const target = document.querySelector(anchor.hash); if (target) observer.observe(target); });
+  </script>
+</Base>

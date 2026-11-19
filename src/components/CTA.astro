@@ -1,0 +1,10 @@
+---
+import Download from './Download.astro';
+import { url } from '../data/site';
+const { campaign = 'solar_terms' } = Astro.props;
+---
+<section class="download-note" aria-label="在 App 中继续探索">
+  <img src={url('images/app/app-icon.jpg')} width="64" height="64" alt="知时节 App 图标" loading="lazy" />
+  <div><h2>知时节，感受二十四节气之美。</h2><p>探知二十四节气、七十二候与中国传统节日。</p></div>
+  <Download placement="page_bottom" campaign={campaign} />
+</section>
